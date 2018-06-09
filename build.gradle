@@ -1,0 +1,51 @@
+// Adding ScalaStyle support
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+apply plugin: 'idea'
+apply plugin: 'scala'
+apply plugin: 'application'
+
+// Scala and Akka versions
+def scalaMajor = "2.12"
+def scalaMinor = "4"
+def akkaVersion = "2.5.13"
+
+group 'com.github.szigyi'
+mainClassName = "com.github.szigyi.akka.Server"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(
+            [group: 'org.scala-lang', name: 'scala-compiler', version: "$scalaMajor.$scalaMinor"],
+            [group: 'org.scala-lang', name: 'scala-library', version: "$scalaMajor.$scalaMinor"],
+            [group: 'com.typesafe.akka', name: "akka-actor_$scalaMajor", version: akkaVersion],
+    )
+
+    testCompile(
+            [group: 'junit', name: 'junit', version: '4.12']
+    )
+}
+
+// Specifying the main class for the 'application' plugin
+jar {
+    baseName = project.name
+    manifest {
+        attributes("Main-Class": mainClassName)
+    }
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.additionalParameters = ["-unchecked", "-deprecation", "-feature", "-Xfatal-warnings", "-encoding", "utf8"]
+}
+
+// Generating gradle wrapper so people don't have to have the Gradle version preinstalled
+task wrapper(type: Wrapper) {
+    gradleVersion = "4.8"
+}
