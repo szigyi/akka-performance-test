@@ -3,6 +3,9 @@
 
 .idea
 .gradle
+out
+target
+build
 
 *.iml
 *.ipr
